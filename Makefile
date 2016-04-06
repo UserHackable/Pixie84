@@ -35,7 +35,7 @@ GERBV_OPTIONS= --export=png --dpi=$(GERBER_IMAGE_RESOLUTION) --background=$(BACK
 # .PHONY: gerbers
 # 
 
-.SECONDARY:
+.SECONDARY: .png
 
 boards := $(wildcard *.brd)
 zips := $(patsubst %.brd,%_gerber.zip,$(boards))
@@ -100,9 +100,6 @@ README.md: Intro.md $(mds)
         --f=$(TOP_SOLDERMASK_COLOR) $*.GBL
 	convert $@ -alpha set -fill none -draw 'matte 0,0 floodfill' -flop -trim +repage $@
 
-clean:
-	rm -f *.zip *.GTL *.GBL *.GTO *.GTP *.GBO *.GTS *.GBS *.GML *.TXT *.gpi *.png *.dri
-
 %.md: %.png %_back.png %.GTL
 	echo "## $* \n\n" >  $@
 	gerber_board_size $*.GTL >> $@
@@ -116,6 +113,13 @@ clean:
 	git init
 	git add .
 	git commit -m 'First Commit'
+
+Intro.md:
+	touch Intro.md
+
+clean:
+	rm -rf *.G[TBM][LOPS] *.TXT *.dri *.gpi
+	rm -rf *.[bs]#?
 
 
 
